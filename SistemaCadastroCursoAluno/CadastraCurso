@@ -1,0 +1,45 @@
+Private Sub inserir_Click()
+Dim procura As Object
+If txtcurso = "" Then
+MsgBox "Digite o curso!", , "Erro!"
+txtcurso.SetFocus
+Exit Sub
+ElseIf txtvalor = "" Or Not IsNumeric(txtvalor) Then
+MsgBox "Digite um valor válido!", , "Erro!"
+txtvalor = ""
+txtvalor.SetFocus
+Exit Sub
+End If
+
+Sheets("Apoio").Select
+For Each procura In Range("cadcursos")
+ If UCase(procura.Value) = UCase(txtcurso) Then
+ MsgBox "Curso já existente!", , "Erro!"
+ txtcurso = ""
+ txtvalor = ""
+ txtcurso.SetFocus
+ Exit Sub
+ End If
+Next
+Range("A100").End(xlUp).Select
+ActiveCell.EntireRow.Insert
+ActiveCell = txtcurso
+ActiveCell.Offset(0, 1) = CDbl(txtvalor)
+ActiveCell.Offset(0, 1).NumberFormat = "#,##0.00"
+Range("a2").Sort key1:=Range("a2"), order1:=xlAscending, Header:=xlYes
+
+Unload Me
+
+End Sub
+
+Private Sub txtvalorcurso_AfterUpdate()
+txtvalor = Format(txtvalor, "#,##0.00")
+
+
+End Sub
+
+
+Private Sub UserForm_Terminate()
+Sheets("Menu").Select
+
+End Sub
