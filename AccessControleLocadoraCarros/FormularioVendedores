@@ -1,0 +1,160 @@
+Option Compare Database
+
+Private Sub Form_Load()
+
+txtcod.Enabled = False
+txtnome.Enabled = False
+txtend.Enabled = False
+txtest.Enabled = False
+txtsal.Enabled = False
+
+btnok.Enabled = False
+btnadc.Enabled = True
+btnprox.Enabled = True
+btnAnt.Enabled = True
+
+End Sub
+
+Private Sub btnadc_Click()
+
+Dim cod1 As String
+Dim cod2 As String
+Dim dig As LongPtr
+Dim contador As Integer
+
+'vai para a tabela e gera uma nova linha de cadastro
+DoCmd.GoToRecord , , acNewRec
+
+'gera um inputbox duas vezes para confirmar se o codigo foi digitado corretamente , ocorre um erro se nao eh numerico ou tem mais de 10 digitos
+cod1 = InputBox("Digite o código do vendedor: ", " INSCRIÇÃO DE VENDEDOR")
+
+'verifica se o codigo eh numerico, e menor de dez digitos
+If Not IsNumeric(cod1) Or Len(cod1) > 10 Then
+    MsgBox "Número Inválido! Digite apenas números...E no máximo 10 digitos!", vbCritical, "ATENÇÃO"
+    Exit Sub
+End If
+
+cod2 = InputBox("Digite novamente o código do vendedor: ", " INSCRIÇÃO DE VENDEDOR")
+
+'verifica se o codigo eh numerico, e menor de dez digitos
+If Not IsNumeric(cod2) Or Len(cod2) > 10 Then
+    MsgBox "Número Inválido! Digite apenas números...E no máximo 10 digitos!", vbCritical, "ATENÇÃO"
+    Exit Sub
+End If
+
+'verifica se ambos os codigos digitados foram iguais
+ If cod1 = cod2 Then
+ 
+    'utiliza a funcao criada para gerar o digito desse codigo
+    dig = calculadgnv(cod1)
+    
+    'coloca o codigo com digito na area de texto, converte as strings para numero decimal
+    txtcod = CDec(cod1 & dig)
+        
+    'conta quantas vezes o codigo gerado esta presente na tabela
+    contador = DCount("CodVendedor", "Vendedor", "CodVendedor=" & txtcod)
+    
+    'caso o contador aponte alguma repeticao do codigo, ocorre um erro, apaga-se o que ha na caixa de texto e apresenta o primeiro ragistro da tabela
+    If contador > 0 Then
+        MsgBox "Código já existente!", vbCritical, "Erro"
+        txtcod = ""
+        DoCmd.GoToRecord , , acFirst
+        Exit Sub
+    End If
+        
+    'mostra como ficou o codigo com digito
+    MsgBox ("Seu novo código é: " & cod1 + "-" & dig)
+        
+    'bloqueia a caixa de texto do codigo e libera as outras
+    txtcod.Enabled = False
+    txtnome.Enabled = True
+    txtend.Enabled = True
+    txtest.Enabled = True
+    txtsal.Enabled = True
+        
+    MsgBox "Digite as outras informações e clique em OK!"
+ 
+ Else
+    MsgBox "Códigos diferentes!", vbCritical, "ATENÇÃO"
+    Exit Sub
+ End If
+
+txtnome.SetFocus
+
+btnadc.Enabled = False
+btnprox.Enabled = False
+btnAnt.Enabled = False
+btnok.Enabled = True
+ 
+End Sub
+
+Private Sub txtnome_KeyPress(KeyAscii As Integer)
+        
+    'deixa em maiusculo tudo que for digitado no campo
+    KeyAscii = Asc(UCase(Chr$(KeyAscii)))
+    
+  
+End Sub
+
+Private Sub txtend_KeyPress(KeyAscii As Integer)
+        
+    'deixa em maiusculo tudo que for digitado no campo
+    KeyAscii = Asc(UCase(Chr$(KeyAscii)))
+    
+
+    
+End Sub
+
+Private Sub txtest_KeyPress(KeyAscii As Integer)
+        
+    'deixa em maiusculo tudo que for digitado no campo
+    KeyAscii = Asc(UCase(Chr$(KeyAscii)))
+    
+
+    
+End Sub
+
+
+Private Sub txtsal_KeyPress(KeyAscii As Integer)
+
+Dim TECLA As String
+ 
+ 'limita as teclas usadas para numeros de 0 à 9 e ",", caso tecla invalida, gera um som e cancela a tecla usada
+ TECLA = Chr$(KeyAscii)
+ If (TECLA < "0" Or TECLA > "9") And TECLA <> "," Then
+    Beep
+    KeyAscii = 0
+ End If
+
+
+End Sub
+
+Private Sub btnok_Enter()
+    
+    'verifica se algum dos campos esta vazio
+    If txtnome <> "" And txtend <> "" And txtest <> "" And txtsal <> "" Then
+        'salva e atualiza a tabela
+        DoCmd.RunCommand acCmdRefresh
+        DoCmd.RefreshRecord
+        
+        txtcod.Enabled = False
+        txtnome.Enabled = False
+        txtend.Enabled = False
+        txtest.Enabled = False
+        txtsal.Enabled = False
+
+        btnadc.Enabled = True
+        btnprox.Enabled = True
+        btnAnt.Enabled = True
+        btnok.Enabled = False
+  
+    Else
+        btnok.Enabled = False
+        MsgBox "Preencha todos os campos!", vbExclamation, "Atenção"
+        btnok.Enabled = True
+        Exit Sub
+    End If
+    
+
+
+End Sub
