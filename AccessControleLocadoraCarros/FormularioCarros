@@ -1,0 +1,256 @@
+Option Compare Database
+Option Explicit
+
+Private Sub btnadd_Enter()
+
+ txtmodelo.Enabled = True
+ txtcor.Enabled = True
+ txtano.Enabled = True
+ txtvalor.Enabled = True
+ txtestado.Enabled = True
+ txtplaca.Enabled = True
+ 
+ btnVender.Enabled = False
+ btneditar.Enabled = False
+ 
+ 
+
+End Sub
+
+Private Sub btnok_Click()
+
+'faz a confirmação sim/nao da edição
+If MsgBox("Confirma as edições?", vbYesNo, "Confirmação") = vbYes Then
+    
+    DoCmd.RunCommand acCmdRefresh
+    
+    txtmodelo.Enabled = False
+    txtcor.Enabled = False
+    txtano.Enabled = False
+    txtvalor.Enabled = False
+    txtestado.Enabled = False
+    txtplaca.Enabled = False
+    
+    btnadd.Enabled = True
+    btnproximo.Enabled = True
+    btnAnt.Enabled = True
+    btneditar.Enabled = True
+Else
+Exit Sub
+End If
+
+btnok.Enabled = False
+btnok.Visible = False
+End Sub
+
+Private Sub Form_Load()
+
+btnok.Visible = False
+btnok.Enabled = False
+
+txtmodelo.Enabled = False
+txtcor.Enabled = False
+txtano.Enabled = False
+txtvalor.Enabled = False
+txtestado.Enabled = False
+txtplaca.Enabled = False
+
+End Sub
+Private Sub btneditar_Click()
+
+txtmodelo.Enabled = True
+txtcor.Enabled = True
+txtano.Enabled = True
+txtvalor.Enabled = True
+txtestado.Enabled = True
+txtplaca.Enabled = True
+
+btnok.Visible = True
+btnok.Enabled = True
+btnadd.Enabled = False
+btnproximo.Enabled = False
+btnAnt.Enabled = False
+btneditar.Enabled = False
+btnVender.Enabled = False
+
+End Sub
+Private Sub btnAnt_GotFocus()
+
+'verifica se o carro foi vendido, vê se tem um codigo de vendedor no local da tabela
+If IsNull(CodVendedor) Or CodVendedor = 0 Then
+    btnVender.Caption = "&Vender Veículo"
+    btnVender.Enabled = True
+Else
+    btnVender.Caption = "Vendido"
+    btnVender.Enabled = False
+End If
+
+txtmodelo.Enabled = False
+txtcor.Enabled = False
+txtano.Enabled = False
+txtvalor.Enabled = False
+txtestado.Enabled = False
+txtplaca.Enabled = False
+
+btneditar.Enabled = True
+
+End Sub
+
+Private Sub btnproximo_GotFocus()
+
+'verifica se o carro foi vendido, vê se tem um codigo de vendedor no local da tabela
+If IsNull(CodVendedor) Or CodVendedor = 0 Then
+    btnVender.Caption = "&Vender Veículo"
+    btnVender.Enabled = True
+Else
+    btnVender.Caption = "Vendido"
+    btnVender.Enabled = False
+End If
+
+txtmodelo.Enabled = False
+txtcor.Enabled = False
+txtano.Enabled = False
+txtvalor.Enabled = False
+txtestado.Enabled = False
+txtplaca.Enabled = False
+
+btneditar.Enabled = True
+End Sub
+
+Private Sub btnVender_Click()
+
+Dim codigolido As String
+Dim digitolido As LongPtr
+Dim digito As LongPtr
+Dim contador As Integer
+
+
+codigolido = InputBox("Digite o código do vendedor: ", " VENDA DE VEÍCULOS")
+
+'verifica se o codigo digitado é composto apenas por numeros
+ If Not IsNumeric(codigolido) Then
+    MsgBox "Número Inválido! Digite apenas números...", vbCritical, "ATENÇÃO"
+    Exit Sub
+ End If
+ 
+ 
+'armazena o ultimo digito do codigo digitado na variavel
+digitolido = CLngPtr(codigolido) Mod 10
+
+'calcula qual deveria ser o digito correto segundo a função "calculadg", presente no modulo1
+digito = calculadg(codigolido)
+
+'verifica se o digito retirado do codigo digitado pelo usuario é correto segundo nossa função
+ If digitolido = digito Then
+    
+    'funcao "DCount" conta quantas vezes o codigo digitado pelo usuario esta presente no campo CodVendedor da tabela Vendedor
+    contador = DCount("CodVendedor", "Vendedor", "CodVendedor=" & codigolido)
+    
+    'verifica se o codigo digitado existe na tabela Vendedor
+    If contador < 1 Then
+        MsgBox "Código de vendedor não cadastrado!", vbCritical, "Erro!"
+        Exit Sub
+    Else
+    
+    'armazena o codigo digitado no campo CodVendedor na tabela Veiculos
+    CodVendedor = codigolido
+    
+    'A instrução abaixo salva o registro corrente - grava o código do vendedor.
+    DoCmd.RunCommand acCmdRefresh
+
+    MsgBox "Venda Efetuada com Sucesso!!", , "Sucesso!"
+    End If
+    
+ Else
+    MsgBox "Digito não bate. Tente novamente ....", vbExclamation, " ATENÇÃO"
+    Exit Sub
+ End If
+
+'verifica se o carro foi vendido, vê se tem um codigo de vendedor no local da tabela
+If IsNull(CodVendedor) Or CodVendedor = 0 Then
+    btnVender.Caption = "&Vender Veículo"
+    btnVender.Enabled = True
+Else
+    btnVender.Caption = "Vendido"
+    btnVender.Enabled = False
+End If
+
+End Sub
+
+Private Sub txtano_BeforeUpdate(Cancel As Integer)
+
+'verifica se o ano digitado bate com a realidade: nao é de antes de 1900 e nem de depois de um ano a partir de hoje
+    If Val(txtano.Text) < 1900 Or Val(txtano.Text) > Year(Date) + 1 Then
+        MsgBox "Ano Inválido", vbCritical, "ATENÇÃO"
+        
+        Cancel = True
+        End If
+
+'verifica se há mais de 4 digitos no campo txtano
+If Len(txtano) > 4 Then
+MsgBox "Digite no máximo quatro digitos", vbExclamation, "Erro"
+End If
+
+End Sub
+
+Private Sub txtmodelo_KeyPress(KeyAscii As Integer)
+        
+    'deixa em maiusculo tudo que for digitado no campo
+    KeyAscii = Asc(UCase(Chr$(KeyAscii)))
+    
+End Sub
+
+Private Sub txtcor_KeyPress(KeyAscii As Integer)
+    
+    'deixa em maiusculo tudo que for digitado no campo
+    KeyAscii = Asc(UCase(Chr$(KeyAscii)))
+    
+End Sub
+
+Private Sub txtestado_KeyPress(KeyAscii As Integer)
+   
+   'deixa em maiusculo tudo que for digitado no campo
+    KeyAscii = Asc(UCase(Chr$(KeyAscii)))
+    
+End Sub
+
+Private Sub txtplaca_Exit(Cancel As Integer)
+
+Dim cont As Integer
+
+'conta quantas vezes a placa aparece no registro
+cont = DCount("Placa", "Veiculos", "Placa = '" & txtplaca & "'")
+
+'verifica se achou alguma placa igual na tabela (no contador acima)
+If cont > 0 Then
+MsgBox "Placa já existente no registro!"
+
+Exit Sub
+Else
+DoCmd.RunCommand acCmdRefresh
+
+End If
+
+End Sub
+
+Private Sub txtplaca_KeyPress(KeyAscii As Integer)
+    
+    'deixa em maiusculo tudo que for digitado no campo
+    KeyAscii = Asc(UCase(Chr$(KeyAscii)))
+    
+End Sub
+
+
+
+Private Sub txtvalor_KeyPress(KeyAscii As Integer)
+
+ Dim TECLA As String
+ 
+ 'limita as teclas usadas para numeros de 0 à 9 e ",", caso tecla invalida, gera um som e cancela a tecla usada
+ TECLA = Chr$(KeyAscii)
+ If (TECLA < "0" Or TECLA > "9") And TECLA <> "," Then
+    Beep
+    KeyAscii = 0
+End If
+
+End Sub
