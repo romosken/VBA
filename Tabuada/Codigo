@@ -1,0 +1,26 @@
+Sub Tabuada()
+Dim numero As Double
+Dim result As String
+
+contador = 0
+linha = 5
+
+numero = Cells(2, 3).Value
+
+Do While contador <= 10
+
+
+Cells(linha, 4) = numero & " X " & contador & " = " & numero * contador
+result = linha Mod 2
+If result = 0 Then
+Cells(linha, 4).Interior.ColorIndex = 4
+End If
+contador = contador + 1
+linha = linha + 1
+
+
+
+
+Loop
+
+End Sub
