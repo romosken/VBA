@@ -1,0 +1,56 @@
+
+Private Sub fechar_Click()
+Unload Me
+End Sub
+
+
+Private Sub multi_Click()
+If n1 = "" Or n2 = "" Then
+MsgBox "Digite os dois valores!", , "Erro!"
+Exit Sub
+End If
+
+result = n1 * n2
+End Sub
+
+
+Private Sub soma_Click()
+If n1 = "" Or n2 = "" Then
+MsgBox "Digite os dois valores!", , "Erro!"
+Exit Sub
+End If
+
+Dim nu1 As Double
+Dim nu2 As Double
+nu1 = n1
+nu2 = n2
+
+result = nu1 + nu2
+End Sub
+
+
+Private Sub subtracao_Click()
+If n1 = "" Or n2 = "" Then
+MsgBox "Digite os dois valores!", , "Erro!"
+Exit Sub
+End If
+
+result = n1 - n2
+End Sub
+
+Private Sub divi_Click()
+If n1 = "" Or n2 = "" Then
+MsgBox "Digite os dois valores!", , "Erro!"
+Exit Sub
+End If
+
+result = n1 / n2
+End Sub
+
+Private Sub limpar_Click()
+n1 = ""
+n2 = ""
+result = ""
+n1.SetFocus
+
+End Sub
