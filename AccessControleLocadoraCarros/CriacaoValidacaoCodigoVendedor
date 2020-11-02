@@ -1,0 +1,76 @@
+Option Compare Database
+Option Explicit
+
+Public Function calculadg(ByVal codigolido As String) As Integer
+
+Dim codlong As LongPtr
+Dim digitolido As LongPtr
+Dim codigo As LongPtr
+Dim digito As LongPtr
+Dim soma As LongPtr
+Dim mult As Integer
+
+
+mult = 2
+soma = 0
+
+
+'transforma a string em numero longo adaptavel
+codlong = CLngPtr(codigolido)
+
+'armazena na variavel o ultimo digito digitado
+digitolido = codlong Mod 10
+
+'retira o digito do codigo
+codigo = Int(codlong / 10)
+
+
+While codigo > 0
+    soma = soma + (codigo Mod 10) * mult
+    mult = mult + 1
+    codigo = Int(codigo / 10)
+Wend
+
+digito = soma Mod 11
+If digito > 1 Then
+digito = 11 - digito
+End If
+
+'da o resultado convertido em inteiro
+calculadg = CInt(digito)
+
+
+End Function
+
+Public Function calculadgnv(ByVal codigolido As String) As Integer
+
+Dim codigo As LongPtr
+Dim digito As LongPtr
+Dim soma As LongPtr
+Dim mult As Integer
+
+
+
+mult = 2
+soma = 0
+
+'converte o codigo digitado para numero longo adaptavel
+codigo = CLngPtr(codigolido)
+
+
+While codigo > 0
+    soma = soma + (codigo Mod 10) * mult
+    mult = mult + 1
+    codigo = Int(codigo / 10)
+Wend
+
+digito = soma Mod 11
+If digito > 1 Then
+digito = 11 - digito
+End If
+
+'da o resultado (digito) convertido em inteiro
+calculadgnv = CInt(digito)
+
+
+End Function
