@@ -1,0 +1,112 @@
+
+
+Private Sub boxcurso_Change()
+valor = Format(boxcurso.Column(1), "#,##0.00")
+lblparcelas.Visible = False
+parcelas.Visible = False
+lblvalorparcela.Visible = False
+valorparcela.Visible = False
+setaparcelas.Visible = False
+lblvista.Visible = False
+totalvista.Visible = False
+optprazo = False
+optvista = False
+parcelas = 2
+
+
+End Sub
+
+
+
+Private Sub optprazo_Click()
+lblparcelas.Visible = True
+parcelas.Visible = True
+lblvalorparcela.Visible = True
+valorparcela.Visible = True
+setaparcelas.Visible = True
+lblvista.Visible = False
+totalvista.Visible = False
+valorparcela = Format(valor / parcelas, "#,##0.00")
+End Sub
+
+Private Sub optvista_Click()
+lblparcelas.Visible = False
+parcelas.Visible = False
+lblvalorparcela.Visible = False
+valorparcela.Visible = False
+setaparcelas.Visible = False
+lblvista.Visible = True
+totalvista.Visible = True
+totalvista = Format(valor - (valor * 0.15), "#,##0.00")
+End Sub
+
+Private Sub setaparcelas_Change()
+parcelas = setaparcelas
+valorparcela = Format(valor / parcelas, "#,##0.00")
+End Sub
+
+Private Sub cadastrar_Click()
+If txtnome = "" Then
+    MsgBox "Digite o nome do aluno!", , "Erro!"
+    txtnome.SetFocus
+    Exit Sub
+ElseIf IsNumeric(txtnome) Then
+    MsgBox "Utilize somente letras no nome!", , "Erro!"
+    txtnome = ""
+    txtnome.SetFocus
+    Exit Sub
+
+ElseIf boxcurso = "" Then
+    MsgBox "Selecione o curso desejado!", , "Erro!"
+    boxcurso.DropDown
+    Exit Sub
+    
+ElseIf optvista = False And optprazo = False Then
+    MsgBox "Indique o tipo de pagamento!", , "Erro"
+    Exit Sub
+Else
+
+Unload Me
+formalunos.Show
+
+End If
+
+Sheets("Alunos").Select
+Range("A100").End(xlUp).Offset(1, 0).Select
+
+If Not IsNumeric(ActiveCell.Offset(-1, 0)) Then
+    ActiveCell = 1
+Else
+    ActiveCell = ActiveCell.Offset(-1, 0) + 1
+    
+End If
+
+ActiveCell.Offset(0, 1) = txtnome
+ActiveCell.Offset(0, 2) = boxcurso
+ActiveCell.Offset(0, 3) = CDbl(valor)
+
+If optvista = True Then
+    ActiveCell.Offset(0, 4) = "À Vista"
+    ActiveCell.Offset(0, 5) = "15%"
+    ActiveCell.Offset(0, 6) = 1
+    ActiveCell.Offset(0, 7) = CDbl(totalvista)
+Else
+    ActiveCell.Offset(0, 4) = "À Prazo"
+    ActiveCell.Offset(0, 5) = "-"
+    ActiveCell.Offset(0, 6) = CInt(parcelas)
+    ActiveCell.Offset(0, 7) = CDbl(valorparcela)
+End If
+
+ActiveCell.Offset(0, 3).NumberFormat = "#,##0.00"
+ActiveCell.Offset(0, 7).NumberFormat = "#,##0.00"
+ActiveCell.Offset(0, 4).HorizontalAlignment = xlCenter
+ActiveCell.Offset(0, 5).HorizontalAlignment = xlCenter
+
+
+End Sub
+
+
+Private Sub fechar_Click()
+Unload Me
+Sheets("Menu").Select
+End Sub
