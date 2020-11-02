@@ -1,0 +1,181 @@
+'funcao q converte decimal para binario
+Public Function DecToBin(ByVal lngDec As Long) As String
+
+Const MAXLEN = 8
+Dim strBin As String
+Dim n As Long
+
+If lngDec < 0 Then
+strBin = "1"
+Else
+strBin = "0"
+End If
+
+For n = MAXLEN To 0 Step -1
+If lngDec And (2 ^ n) Then
+strBin = strBin & "1"
+Else
+strBin = strBin & "0"
+End If
+Next
+
+DecToBin = strBin
+
+End Function
+'funcao q converte binario para decimal
+Public Function BinaryToDecimal(ByVal Binary As String) As Long
+        Dim n As Long
+        Dim s As Integer
+
+        For s = 1 To Len(Binary)
+            n = n + (Mid(Binary, Len(Binary) - s + 1, 1) * (2 ^ _
+                (s - 1)))
+        Next s
+
+        BinaryToDecimal = n
+    End Function
+
+Private Sub converter_Click()
+
+Dim dec As Double
+'outra funcao que funcao que funciona: worksheetfunction.dec2bin() ou bin2dec; hex2dec...
+
+'decimal p/ binario
+If optdec1 = True And optbin2 = True Then
+txtnumero = Int(txtnumero)
+result = DecToBin(txtnumero)
+End If
+
+'hexadecimal p/ binario
+If opthex1 = True And optbin2 = True Then
+dec = CDbl("&H" + txtnumero)
+result = DecToBin(dec)
+End If
+
+'octal p/ binario
+If optoct1 = True And optbin2 = True Then
+dec = CDbl("&O" + txtnumero)
+result = DecToBin(dec)
+End If
+
+
+
+'binario p/ decimal
+If optbin1 = True And optdec2 = True Then
+result = BinaryToDecimal(txtnumero)
+End If
+
+'hexadecimal p/ decimal
+If opthex1 = True And optdec2 = True Then
+result = CDbl("&H" + txtnumero)
+End If
+
+'octal p/ decimal
+If optoct1 = True And optdec2 = True Then
+result = CDbl("&O" + txtnumero)
+End If
+
+
+
+'decimal p/ hexadecimal
+If optdec1 = True And opthex2 = True Then
+txtnumero = Int(txtnumero)
+result = Hex(txtnumero)
+End If
+'binario p/ hexadecimal
+If optbin1 = True And opthex2 = True Then
+result = BinaryToDecimal(txtnumero)
+result = Hex(result)
+End If
+'octal p/ hexadecimal
+If optoct1 = True And opthex2 = True Then
+dec = CDbl("&O" + txtnumero)
+result = Hex(dec)
+End If
+
+
+
+
+'decimal p/ octal
+If optdec1 = True And optoct2 = True Then
+txtnumero = Int(txtnumero)
+result = Oct(txtnumero)
+End If
+
+'binario p/ octal
+If optbin1 = True And optoct2 = True Then
+result = BinaryToDecimal(txtnumero)
+result = Oct(result)
+End If
+
+'hexadecimal p/ octal
+If opthex1 = True And optoct2 = True Then
+dec = CDbl("&H" + txtnumero)
+result = Oct(dec)
+End If
+
+End Sub
+
+Private Sub optbin2_Click()
+'evita erros do usuario
+If optdec1 = False And optbin1 = False And opthex1 = False And optoct1 = False Then
+MsgBox ("Escolha de qual você irá converter primeiro!"), , "Erro!"
+optbin2 = False
+End If
+If optbin1 = True And optbin2 = True Then
+MsgBox ("Escolha opcões diferentes"), , "Erro!"
+optbin2 = False
+End If
+
+
+End Sub
+
+
+Private Sub optdec1_Click()
+
+End Sub
+
+Private Sub optdec2_Click()
+'evita erros do usuario
+If optdec1 = False And optbin1 = False And opthex1 = False And optoct1 = False Then
+MsgBox ("Escolha de qual você irá converter primeiro!"), , "Erro!"
+optdec2 = False
+End If
+If optdec1 = True And optdec2 = True Then
+MsgBox ("Escolha opcões diferentes!"), , "Erro!"
+optdec2 = False
+End If
+
+
+
+End Sub
+
+Private Sub opthex2_Click()
+'evita erros do usuario
+If optdec1 = False And optbin1 = False And opthex1 = False And optoct1 = False Then
+MsgBox ("Escolha de qual você irá converter primeiro!"), , "Erro!"
+opthex2 = False
+End If
+If opthex1 = True And opthex2 = True Then
+MsgBox ("Escolha opcões diferentes"), , "Erro!"
+opthex2 = False
+End If
+
+End Sub
+
+Private Sub optoct2_Click()
+'evita erros do usuario
+If optdec1 = False And optbin1 = False And opthex1 = False And optoct1 = False Then
+MsgBox ("Escolha de qual você irá converter primeiro!"), , "Erro!"
+optoct2 = False
+End If
+If optoct1 = True And optoct2 = True Then
+MsgBox ("Escolha opcões diferentes"), , "Erro!"
+optoct2 = False
+End If
+
+End Sub
+
+Private Sub result_Click()
+
+End Sub
